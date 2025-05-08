@@ -4,7 +4,7 @@
 # ${sleepInt} seconds and store it in the custom directory ${pstackDir}.
 
 # Variables to unset later if script closes:
-unset_vars_later=(sleepInt runningProc givenDir parentDir dieThreshold freeSpace pstackDir fileNum currDate procPid runningProc procList pstackSize volumeAvai alertWD debugMissing)
+unset_vars_later=(sleepInt runningProc givenDir parentDir dieThreshold freeSpace pstackDir fileNum currDate procPid runningProc procList pstackSize volumeAvai debugMissing)
 
 # Trap [CTRL + C] and clean up if pressed
 trap ctrl_c INT
@@ -179,8 +179,7 @@ while true; do
 	fi
 
 	# Check for any WATCHDOG alerts for SSSD in the last 30 seconds
-	alertWD=$(journalctl --since "30 seconds ago" -u sssd|grep WATCHDOG)
-	if [[ -n "$alertWD" ]]; then
+	if journalctl --since "30 seconds ago" -u sssd | grep -q WATCHDOG; then
 		echo -e "A recent SSSD WATCHDOG alert has been detected. This may be a good place to stop [CTRL +C].";
 	fi
 
