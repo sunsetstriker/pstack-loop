@@ -26,6 +26,14 @@ if [[ $UID -ne 0 ]];
 	exit 1
 fi
 
+# Set some vars
+
+# Threshold for safety reasons (1.5G)
+dieThreshold=1500000
+
+# File counter
+fileNum=0;
+
 # We need gdb
 if rpm -q "gdb" &> /dev/null; then
 	echo -e "\nVerified $(rpm -q gdb) is installed..\n";
@@ -120,9 +128,6 @@ else
 	fi
 fi
 
-# Threshold for safety reasons (1.5G)
-dieThreshold=1500000
-
 # Die if there's not enough space (1.5G or less)
 freeSpace=$(df ${parentDir}|awk 'NR==2 {print $4}')
 if [[ "$freeSpace" -lt "$dieThreshold" ]]; then
@@ -142,9 +147,6 @@ read -p "Press [ENTER] if this is ok or [CTRL + C] to quit.."; echo;
 pstackDir="${parentDir}/${runningProc}_pstacks_$(date +%F_%H:%M)";
 mkdir ${pstackDir};
 echo -e "Created ${pstackDir} for storage..\n";
-
-# File counter
-fileNum=0;
 
 # Start looping and generating stacks:
 echo -e "Running every ${sleepInt} seconds..\n";
