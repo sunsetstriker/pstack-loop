@@ -58,7 +58,7 @@ echo -e "This script will grab pstacks of the chosen SSSD process every few seco
 
 # How often are we dumping?
 echo "It is suggested to let this script run once every 1/3 of the "timeout" value";
-echo -e "which is set in the [sssd] section of sssd.conf. Default: 10\n";
+echo -e "which is set in the DOMAIN and SERVICES sections of sssd.conf. Default: 10\n";
 echo "How often should we run? (3 to 5 seconds is preferred):";
 read -p "> " sleepInt; echo;
 while [[ ! "$sleepInt" =~ ^-?[0-9]+$ ]]; do
@@ -67,7 +67,7 @@ while [[ ! "$sleepInt" =~ ^-?[0-9]+$ ]]; do
 done
 
 # Which SSSD process are we dumping?
-procList=$(ps aux|grep sssd|grep -v grep|awk 'NR >= 2 && NR <= 100 {print $11}'|grep -v bash|sed 's:.*/::')
+procList=$(systemctl status sssd | sed -n '/\/usr\//{s/.*\/\([^ ]*\).*/\1/p}' | sed '/\.service/d')
 echo -e "Currently running SSSD processes:\n";
 echo -e "${procList}\n";
 echo "Which of the above are we dumping? (Example: sssd_be)";
